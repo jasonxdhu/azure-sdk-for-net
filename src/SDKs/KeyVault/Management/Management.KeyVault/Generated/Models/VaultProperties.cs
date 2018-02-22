@@ -56,7 +56,19 @@ namespace Microsoft.Azure.Management.KeyVault.Models
         /// <param name="createMode">The vault's create mode to indicate
         /// whether the vault need to be recovered or not. Possible values
         /// include: 'recover', 'default'</param>
-        public VaultProperties(Guid tenantId, Sku sku, IList<AccessPolicyEntry> accessPolicies = default(IList<AccessPolicyEntry>), string vaultUri = default(string), bool? enabledForDeployment = default(bool?), bool? enabledForDiskEncryption = default(bool?), bool? enabledForTemplateDeployment = default(bool?), bool? enableSoftDelete = default(bool?), CreateMode? createMode = default(CreateMode?))
+        /// <param name="networkAcls">Gets or sets an network rule.
+        /// </param> 
+        public VaultProperties(
+            Guid tenantId,
+            Sku sku,
+            IList<AccessPolicyEntry> accessPolicies = default(IList<AccessPolicyEntry>),
+            string vaultUri = default(string),
+            bool? enabledForDeployment = default(bool?),
+            bool? enabledForDiskEncryption = default(bool?),
+            bool? enabledForTemplateDeployment = default(bool?),
+            bool? enableSoftDelete = default(bool?),
+            CreateMode? createMode = default(CreateMode?),
+            NetworkRuleSet networkAcls = default(NetworkRuleSet))
         {
             Sku = new Sku();
             TenantId = tenantId;
@@ -68,6 +80,7 @@ namespace Microsoft.Azure.Management.KeyVault.Models
             EnabledForTemplateDeployment = enabledForTemplateDeployment;
             EnableSoftDelete = enableSoftDelete;
             CreateMode = createMode;
+            NetworkAcls = networkAcls;
         }
 
         /// <summary>
@@ -137,6 +150,13 @@ namespace Microsoft.Azure.Management.KeyVault.Models
         public CreateMode? CreateMode { get; set; }
 
         /// <summary>
+        /// Gets or sets network rule-sets
+        /// If the vault is null, it turns off the firewall (legacy behavior).
+        /// </summary>
+        [JsonProperty(PropertyName = "networkAcls")]
+        public NetworkRuleSet NetworkAcls { get; set; }
+
+        /// <summary>
         /// Validate the object.
         /// </summary>
         /// <exception cref="ValidationException">
@@ -165,6 +185,11 @@ namespace Microsoft.Azure.Management.KeyVault.Models
                         element.Validate();
                     }
                 }
+            }
+
+            if (this.NetworkAcls != null)
+            {
+                this.NetworkAcls.Validate();
             }
         }
     }
